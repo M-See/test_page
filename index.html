@@ -13,10 +13,25 @@
             align-items: center;
             justify-content: center;
             font-size: 16px;
+            background-color: #f1f1f1;
+            position: relative;
+        }
+
+        #wheel p {
+            transform: rotate(180deg);
         }
 
         #button {
             margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -27,35 +42,60 @@
     <button id="button" onclick="spinWheel()">Drehen</button>
 
     <script>
-        const entries = ['Matt', 'Matti', 'Ann', 'Ann', 'Pei', 'Pei'];
-        let currentEntry = null;
-        
+        let availableNames = [];
+        let drawnNames = [];
+
+        function loadAvailableNames() {
+            const storedAvailableNames = localStorage.getItem('availableNames');
+            if (storedAvailableNames) {
+                availableNames = JSON.parse(storedAvailableNames);
+            } else {
+                availableNames = ['Matt', 'Matti', 'Ann', 'Ann', 'Pei', 'Pei'];
+            }
+        }
+
+        function loadDrawnNames() {
+            const storedDrawnNames = localStorage.getItem('drawnNames');
+            if (storedDrawnNames) {
+                drawnNames = JSON.parse(storedDrawnNames);
+            } else {
+                drawnNames = [];
+            }
+        }
+
+        function saveAvailableNames() {
+            localStorage.setItem('availableNames', JSON.stringify(availableNames));
+        }
+
+        function saveDrawnNames() {
+            localStorage.setItem('drawnNames', JSON.stringify(drawnNames));
+        }
+
         function spinWheel() {
-            if (entries.length === 0) {
+            if (availableNames.length === 0) {
                 document.getElementById('result').textContent = 'Alle Namen wurden gezogen.';
                 return;
             }
-            
-            if (currentEntry !== null) {
-                const indexToRemove = entries.indexOf(currentEntry);
-                if (indexToRemove !== -1) {
-                    entries.splice(indexToRemove, 1);
-                }
-            }
-            
+
             const wheel = document.getElementById('wheel');
             const resultDisplay = document.getElementById('result');
-            const randomIndex = Math.floor(Math.random() * entries.length);
-            currentEntry = entries[randomIndex];
-            
+            const randomIndex = Math.floor(Math.random() * availableNames.length);
+            const currentEntry = availableNames[randomIndex];
+
             resultDisplay.textContent = `Gezogener Name: ${currentEntry}`;
-            entries.splice(randomIndex, 1);
-            
+            availableNames.splice(randomIndex, 1);
+            drawnNames.push(currentEntry);
+            saveAvailableNames();
+            saveDrawnNames();
+
             wheel.style.animation = 'spin 2s ease-out';
             setTimeout(() => {
                 wheel.style.animation = '';
             }, 2000);
         }
+
+        loadAvailableNames();
+        loadDrawnNames();
     </script>
 </body>
 </html>
