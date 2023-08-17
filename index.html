@@ -1,29 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Random Picker</title>
+    <title>Spinning Wheel</title>
+    <style>
+        #wheel {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        #button {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Random Picker</h1>
-    <label for="names">Gib die Namen ein (durch Komma getrennt):</label>
-    <input type="text" id="names">
-    <button onclick="pickRandom()">Zufällige Auswahl</button>
-    <p id="result"></p>
+    <div id="wheel">
+        <p id="result">Klicke auf "Drehen"!</p>
+    </div>
+    <button id="button" onclick="spinWheel()">Drehen</button>
 
     <script>
-        function pickRandom() {
-            const namesInput = document.getElementById('names');
-            const resultDisplay = document.getElementById('result');
-
-            const names = namesInput.value.split(',');
-            const randomIndex = Math.floor(Math.random() * names.length);
-            const randomName = names[randomIndex].trim();
-
-            if (randomName) {
-                resultDisplay.textContent = `Zufällig ausgewählte Person: ${randomName}`;
-            } else {
-                resultDisplay.textContent = 'Gib mindestens einen Namen ein.';
+        const entries = ['Matt', 'Matti', 'Ann', 'Ann', 'Pei', 'Pei'];
+        let currentEntry = null;
+        
+        function spinWheel() {
+            if (entries.length === 0) {
+                document.getElementById('result').textContent = 'Alle Namen wurden gezogen.';
+                return;
             }
+            
+            if (currentEntry !== null) {
+                const indexToRemove = entries.indexOf(currentEntry);
+                if (indexToRemove !== -1) {
+                    entries.splice(indexToRemove, 1);
+                }
+            }
+            
+            const wheel = document.getElementById('wheel');
+            const resultDisplay = document.getElementById('result');
+            const randomIndex = Math.floor(Math.random() * entries.length);
+            currentEntry = entries[randomIndex];
+            
+            resultDisplay.textContent = `Gezogener Name: ${currentEntry}`;
+            entries.splice(randomIndex, 1);
+            
+            wheel.style.animation = 'spin 2s ease-out';
+            setTimeout(() => {
+                wheel.style.animation = '';
+            }, 2000);
         }
     </script>
 </body>
