@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Picker</title>
+</head>
+<body>
+    <h1>Random Picker</h1>
+    <label for="names">Gib die Namen ein (durch Komma getrennt):</label>
+    <input type="text" id="names">
+    <button onclick="pickRandom()">Zufällige Auswahl</button>
+    <p id="result"></p>
+
+    <script>
+        function pickRandom() {
+            const namesInput = document.getElementById('names');
+            const resultDisplay = document.getElementById('result');
+
+            const names = namesInput.value.split(',');
+            const randomIndex = Math.floor(Math.random() * names.length);
+            const randomName = names[randomIndex].trim();
+
+            if (randomName) {
+                resultDisplay.textContent = `Zufällig ausgewählte Person: ${randomName}`;
+            } else {
+                resultDisplay.textContent = 'Gib mindestens einen Namen ein.';
+            }
+        }
+    </script>
+</body>
+</html>
